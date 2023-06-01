@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-Hola.
-Hola que tal
+
 /** COLORES PARA LA TERMINAL DE WINDOWS*/
 #define ROJO     12
 #define VERDE   10
@@ -27,6 +26,7 @@ void menu();
 void verificarArchivo(char archivo[]);
 void cargarProducto(FILE *listadoFile, char listado[]);
 void leerArchivo(FILE *listadoFile, char listado[]);
+void cuponDeDescuento(Pila *pila1);
 
 /** NOMBRE Y VERSIÓN DEL PROGRAMA*/
 const char tpFinal[] = "Gestor de Stock V0.03.0";
@@ -372,6 +372,4 @@ void cuponDeDescuento(Pila *pila1)
         break;
 
     }
-
-    return suma;
 }
