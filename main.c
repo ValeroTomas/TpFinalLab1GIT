@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-//HOLA COMO ESTAS
+
 /** COLORES PARA LA TERMINAL DE WINDOWS*/
 #define ROJO     12
 #define VERDE   10
