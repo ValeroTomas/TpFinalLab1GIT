@@ -27,12 +27,13 @@ void menu();
 void verificarArchivo(char archivo[]);
 void cargarProducto(FILE *listadoFile, char listado[]);
 void leerArchivo(FILE *listadoFile, char listado[]);
+void cuponDeDescuento(Pila *pila1);
 
-/** NOMBRE Y VERSI”N DEL PROGRAMA*/
+/** NOMBRE Y VERSI√ìN DEL PROGRAMA*/
 const char tpFinal[] = "Gestor de Stock V0.03.0";
 
 
-/** FUNCI”N PRINCIPAL*/
+/** FUNCI√ìN PRINCIPAL*/
 int main()
 {
     int opc;
@@ -104,7 +105,7 @@ int main()
     return 0;
 }
 
-/** FUNCI”N BASE DE CARGA DE PRODUCTO*/
+/** FUNCI√ìN BASE DE CARGA DE PRODUCTO*/
 stProducto nuevoProducto(int i)
 {
     stProducto producto;
@@ -129,7 +130,7 @@ stProducto nuevoProducto(int i)
     return producto;
 }
 
-/** FUNCI”N PARA CARGAR EL PRODUCTO AL ARCHIVO*/
+/** FUNCI√ìN PARA CARGAR EL PRODUCTO AL ARCHIVO*/
 void cargarProducto(FILE *listadoFile, char listado[])
 {
     stProducto producto;
@@ -218,7 +219,7 @@ void leerArchivo(FILE *listadoFile, char listado[])
 
 }
 
-/** MEN⁄ PRINCIPAL DEL PROGRAMA*/
+/** MEN√ö PRINCIPAL DEL PROGRAMA*/
 void menu()
 {
     color(CYAN);
@@ -268,21 +269,21 @@ void menu()
     color(ROJO);
     printf(" 6. SALIR                                                      ");
     color(CYAN);
-    printf("|\n"); /**AGREGAR MAS OPCIONES AC¡ */
+    printf("|\n"); /**AGREGAR MAS OPCIONES AC√Å */
     printf(" |                                                               |\n");
     printf(" |_______________________________________________________________|");
     printf("\n\n  Ingrese su opcion: ");
     color(BLANCO);
 }
 
-/** FUNCI”N DE COLORES EN TERMINAL DE WINDOWS*/
+/** FUNCI√ìN DE COLORES EN TERMINAL DE WINDOWS*/
 void color(int color)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(hConsole, color);
 }
 
-/** VERIFICACI”N DE EXISTENCIA DE ARCHIVO*/
+/** VERIFICACI√ìN DE EXISTENCIA DE ARCHIVO*/
 void verificarArchivo(char archivo[])
 {
     FILE *arch;
@@ -339,3 +340,58 @@ void verificarArchivo(char archivo[])
 }
 
 
+/** FUNCION 'CALCULO DEL DESCUENTO' **/
+void cuponDeDescuento(Pila *pila1)
+{
+
+
+    Pila aux;
+    inicpila (&aux);
+    int suma = 0;
+    int aux2;
+    float descuento;
+    int op;
+
+    while(!pilavacia(pila1))
+    {
+        aux2 = tope(pila1);
+        suma = suma + aux2;
+        apilar(&aux, desapilar(pila1));
+    }
+
+    while(!pilavacia(&aux)){
+
+        apilar(pila1, desapilar(&aux));
+
+    }
+
+    printf("**  Selecciona tu cupon de descuento  ** \n\n");
+    printf("  (1) Prog4 (20% de descuento en la totalidad de la compra)\n");
+    printf("  (2) JJT10 (35% de descuento en la totalidad de la compra)");
+    printf("\n  -Insertar cupon aqui: ");
+
+    scanf("%i", &op);
+
+    switch(op)
+    {
+
+    case 1:
+
+        descuento = suma * 0.20; //DESCUENTO QUE LUEGO RESTO CON EL PRECIO TOTAL
+
+        suma = suma - descuento;
+
+        printf("\n * El total de la compra es de: %i", suma);
+        break;
+
+
+    case 2:
+
+        descuento = suma * 0.35; //DESCUENTO QUE LUEGO RESTO CON EL PRECIO TOTAL
+        suma = suma - descuento;
+
+        printf("El total de la compra es de: %i", suma);
+        break;
+
+    }
+}
