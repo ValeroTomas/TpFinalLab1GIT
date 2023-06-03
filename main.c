@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <string.h>
 
 /** COLORES PARA LA TERMINAL DE WINDOWS*/
 #define ROJO     12
@@ -51,23 +52,27 @@ int main()
         scanf("%d", &opc);
         switch(opc)
         {
-        case 1:
+        case 1: //LISTADO ORDENADO POR ID
             system("cls");
             leerArchivo(listado, listadoFile);
             system("PAUSE");
             system("cls");
             break;
 
-        case 2:
+        case 2: //LISTADO ORDENADO POR NOMBRE
+            system("cls");
+            leerArchivo (listado,listadoFile);
+            system("PAUSE");
+            system("cls");
             break;
 
-        case 3:
+        case 3: //CARGA PRODUCTOS
             system("cls");
             cargarProducto(listado, listadoFile);
             system("cls");
             break;
 
-        case 4:
+        case 4: //CARGA EXISTENCIAS
             break;
 
         case 5:
@@ -131,7 +136,7 @@ void cargarProducto(FILE *listadoFile, char listado[])
     stProducto cache;
     listadoFile = fopen(listado, "rb");
     int i = 0;
-    int size;
+    long int size;
     if(listadoFile != NULL)
     {
         fseek(listadoFile, 0, SEEK_END);
@@ -155,39 +160,55 @@ void leerArchivo(FILE *listadoFile, char listado[])
 {
 
     stProducto producto;
+    long int size;
     listadoFile = fopen(listado, "rb");
+
     if (listadoFile!= NULL)
     {
-        while(!feof(listadoFile))
-        {
-            fread(&producto, sizeof(stProducto),1, listadoFile);
-            if(!feof(listadoFile))
-            {
-                color(AMARILLO);
-                printf("\n______________________________________\n\n");
-                color(CYAN);
-                printf ("ID: ");
-                color(BLANCO);
-                printf ("%i\n", producto.id);
-                color(CYAN);
-                printf ("NOMBRE: ");
-                color(BLANCO);
-                printf ("%s\n", producto.nombre);
-                color(CYAN);
-                printf ("EXISTENCIAS: ");
-                color(BLANCO);
-                printf ("%i\n", producto.existencias);
-                color(CYAN);
-                printf ("PRECIO: ", producto.precio);
-                color(BLANCO);
-                printf ("$%i\n", producto.precio);
-                color(AMARILLO);
-                printf("______________________________________\n");
-                color(BLANCO);
-            }
-            printf("\n");
-        }
+        fseek(listadoFile, 0, SEEK_END);
+        size = ftell(listadoFile);
         fclose(listadoFile);
+        listadoFile = fopen(listado, "rb");
+        if (size == 0)
+        {
+            printf ("EL ARCHIVO NO ESTA CARGADO \n");
+
+        }
+        else
+        {
+            while(!feof(listadoFile))
+            {
+                fread(&producto, sizeof(stProducto),1, listadoFile);
+                if(!feof(listadoFile))
+                {
+                    color(AMARILLO);
+                    printf("\n______________________________________\n\n");
+                    color(CYAN);
+                    printf ("ID: ");
+                    color(BLANCO);
+                    printf ("%i\n", producto.id);
+                    color(CYAN);
+                    printf ("NOMBRE: ");
+                    color(BLANCO);
+                    printf ("%s\n", producto.nombre);
+                    color(CYAN);
+                    printf ("EXISTENCIAS: ");
+                    color(BLANCO);
+                    printf ("%i\n", producto.existencias);
+                    color(CYAN);
+                    printf ("PRECIO: ", producto.precio);
+                    color(BLANCO);
+                    printf ("$%i\n", producto.precio);
+                    color(AMARILLO);
+                    printf("______________________________________\n");
+                    color(BLANCO);
+                }
+                printf("\n");
+            }
+            fclose(listadoFile);
+
+
+        }
     }
     else
     {
@@ -316,3 +337,5 @@ void verificarArchivo(char archivo[])
         }
     }
 }
+
+
