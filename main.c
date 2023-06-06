@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <string.h>
+#include "pila.h"
 
 /** COLORES PARA LA TERMINAL DE WINDOWS*/
 #define ROJO     12
@@ -29,6 +30,7 @@ void cargarProducto(FILE *listadoFile, char listado[]);
 void leerArchivo(FILE *listadoFile, char listado[]);
 void cuponDeDescuento(Pila *pila1);
 
+
 /** NOMBRE Y VERSIÓN DEL PROGRAMA*/
 const char tpFinal[] = "Gestor de Stock V0.03.0";
 
@@ -40,6 +42,7 @@ int main()
     int loop = 1;
     int flag;
     char listadoFile[] = "listado.bin";
+    stProducto productos[30];
     FILE *listado;
 
     verificarArchivo(listadoFile);
@@ -62,7 +65,7 @@ int main()
 
         case 2: //LISTADO ORDENADO POR NOMBRE
             system("cls");
-            leerArchivo (listado,listadoFile);
+            ordenarProductoNombre();
             system("PAUSE");
             system("cls");
             break;
@@ -73,7 +76,7 @@ int main()
             system("cls");
             break;
 
-        case 4: //CARGA EXISTENCIAS
+        case 4: //CARGA EXISTENCIAS ID
             break;
 
         case 5:
@@ -359,7 +362,8 @@ void cuponDeDescuento(Pila *pila1)
         apilar(&aux, desapilar(pila1));
     }
 
-    while(!pilavacia(&aux)){
+    while(!pilavacia(&aux))
+    {
 
         apilar(pila1, desapilar(&aux));
 
@@ -395,3 +399,24 @@ void cuponDeDescuento(Pila *pila1)
 
     }
 }
+
+void insertarProductoNombre (stProducto producto[], int posBusqueda, stProducto dato)
+{
+    int i = posBusqueda;
+
+
+    while(i>=0 && strcmp(dato.nombre, producto[i].nombre) == -1){
+        producto[i+1]=producto[i];
+        i--;
+    }
+    producto[i+1]=dato;
+}
+
+void ordenarProductoNombre(stProducto producto[], int validos){
+    int i = 0;
+    while(i<validos-1){
+        insertarProductoNombre(producto,i,producto[i+1]);
+        i++;
+    }
+}
+
