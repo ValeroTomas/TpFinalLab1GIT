@@ -32,7 +32,7 @@ void cuponDeDescuento(Pila *pila1);
 
 
 /** NOMBRE Y VERSIÓN DEL PROGRAMA*/
-const char tpFinal[] = "Gestor de Stock V0.03.0";
+const char tpFinal[] = "Gestor de Stock V0.04.5";
 
 
 /** FUNCIÓN PRINCIPAL*/
