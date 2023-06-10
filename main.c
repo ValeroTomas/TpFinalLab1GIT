@@ -21,6 +21,10 @@ typedef struct
     int precio;
 } stProducto;
 
+/** NOMBRE Y VERSIÓN DEL PROGRAMA*/
+const char tpFinal[] = "Gestor de Stock V0.04.5";
+const int dim = 30;
+
 /** FUNCIONES*/
 stProducto nuevoProducto(int i);
 void color(int color);
@@ -29,10 +33,11 @@ void verificarArchivo(char archivo[]);
 void cargarProducto(FILE *listadoFile, char listado[]);
 void leerArchivo(FILE *listadoFile, char listado[]);
 void cuponDeDescuento(Pila *pila1);
+void insertarProductoNombre (stProducto producto[], int posBusqueda, stProducto dato);
+void ordenarProductoNombre(stProducto producto[], int validos);
+int pasarArreglo (stProducto arreglo[], int dim);
 
 
-/** NOMBRE Y VERSIÓN DEL PROGRAMA*/
-const char tpFinal[] = "Gestor de Stock V0.04.5";
 
 
 /** FUNCIÓN PRINCIPAL*/
@@ -41,8 +46,9 @@ int main()
     int opc;
     int loop = 1;
     int flag;
+    int validos;
     char listadoFile[] = "listado.bin";
-    stProducto productos[30];
+    stProducto producto[30];
     FILE *listado;
 
     verificarArchivo(listadoFile);
@@ -65,7 +71,9 @@ int main()
 
         case 2: //LISTADO ORDENADO POR NOMBRE
             system("cls");
-            ordenarProductoNombre();
+            validos = pasarArreglo(producto, 30);
+            ordenarProductoNombre(producto, validos);
+            mostrarArreglo(producto, validos);
             system("PAUSE");
             system("cls");
             break;
@@ -349,7 +357,7 @@ void cuponDeDescuento(Pila *pila1)
 
 
     Pila aux;
-    inicpila (&aux);
+    inicpila(&aux);
     int suma = 0;
     int aux2;
     float descuento;
@@ -420,3 +428,35 @@ void ordenarProductoNombre(stProducto producto[], int validos){
     }
 }
 
+int pasarArreglo (stProducto arreglo[], int dim){
+
+    FILE *listado;
+    listado = fopen("listado.bin", "rb");
+
+    int i = 0;
+    stProducto producto;
+
+    if(listado != NULL){
+
+        while(!feof(listado) && i < dim){
+
+            fread(&producto, sizeof(stProducto), 1, listado);
+            arreglo[i] = producto;
+
+            i++;
+        }
+        fclose(listado);
+    }
+    return i;
+}
+
+void mostrarArreglo(stProducto arreglo[], int validos){
+
+    int i = 0;
+
+    for(i = 0; i < validos; i++){
+
+        printf("%s", &arreglo[i].nombre);
+
+    }
+}
