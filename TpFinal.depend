@@ -18,3 +18,17 @@
 	<string.h>
 	"pila.h"
 
+1686079012 source:c:\users\joaqu\onedrive\documentos\github\tpfinallab1git\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	<string.h>
+	"pila.h"
+
+1686078272 c:\users\joaqu\onedrive\documentos\github\tpfinallab1git\pila.h
+	<stdio.h>
+	<malloc.h>
+
+1686078272 source:c:\users\joaqu\onedrive\documentos\github\tpfinallab1git\pila.c
+	"pila.h"
+
