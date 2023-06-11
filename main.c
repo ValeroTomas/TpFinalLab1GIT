@@ -22,7 +22,7 @@ typedef struct
 } stProducto;
 
 /** NOMBRE Y VERSIÓN DEL PROGRAMA*/
-const char tpFinal[] = "Gestor de Stock V0.04.5";
+const char tpFinal[] = "Gestor de Stock V0.05.0";
 const int dim = 30;
 
 /** FUNCIONES*/
@@ -35,6 +35,10 @@ void leerArchivo(FILE *listadoFile, char listado[]);
 void cuponDeDescuento(Pila *pila1);
 void insertarProductoNombre (stProducto producto[], int posBusqueda, stProducto dato);
 void ordenarProductoNombre(stProducto producto[], int validos);
+void borrarDato(int id, char archivo[]);
+void modificarPrecio(int id, int precio, char archivo[]);
+void modificarExistencias(int id, int precio, char archivo[]);
+void productoSeleccionado (int id, char archivo[]);
 int pasarArreglo (stProducto arreglo[], int dim);
 
 
@@ -47,6 +51,8 @@ int main()
     int loop = 1;
     int flag;
     int validos;
+    int id = 0;
+    int stock;
     char listadoFile[] = "listado.bin";
     stProducto producto[30];
     FILE *listado;
@@ -85,6 +91,21 @@ int main()
             break;
 
         case 4: //CARGA EXISTENCIAS ID
+            system("cls");
+            leerArchivo(listado, listadoFile);
+            printf("INGRESE ID DEL PRODUCTO QUE QUIERE CAMBIAR: \n");
+            fflush(stdin);
+            scanf("%i", &id);
+            printf("\n-----PRODUCTO A MODIFICAR-----");
+            productoSeleccionado(id, listadoFile);
+            printf ("INGRESE NUEVO STOCK\n");
+            fflush(stdin);
+            scanf("%i", &stock);
+            modificarExistencias(id, stock, listadoFile);
+
+
+            system("pause");
+            system("cls");
             break;
 
         case 5:
@@ -99,6 +120,20 @@ int main()
             system("cls");
             exit(0);
             break;
+
+        case 7:
+            system("cls");
+            leerArchivo(listado, listadoFile);
+            color(CYAN);
+            printf("\n\n Ingrese el id del producto a eliminar: ");
+            color (BLANCO);
+            fflush(stdin);
+            scanf("%d", &id);
+            borrarDato(id, listadoFile);
+            system("pause");
+            system("cls");
+            break;
+
 
         default:
             system("cls");
@@ -282,6 +317,11 @@ void menu()
     color(CYAN);
     printf("|\n"); /**AGREGAR MAS OPCIONES ACÁ */
     printf(" |                                                               |\n");
+    printf(" |");
+    color(BLANCO);
+    printf(" 7. BORRAR UN ARCHIVO                                          ");
+    color(CYAN);
+    printf("|\n");
     printf(" |_______________________________________________________________|");
     printf("\n\n  Ingrese su opcion: ");
     color(BLANCO);
@@ -413,22 +453,26 @@ void insertarProductoNombre (stProducto producto[], int posBusqueda, stProducto 
     int i = posBusqueda;
 
 
-    while(i>=0 && strcmp(dato.nombre, producto[i].nombre) == -1){
+    while(i>=0 && strcmp(dato.nombre, producto[i].nombre) == -1)
+    {
         producto[i+1]=producto[i];
         i--;
     }
     producto[i+1]=dato;
 }
 
-void ordenarProductoNombre(stProducto producto[], int validos){
+void ordenarProductoNombre(stProducto producto[], int validos)
+{
     int i = 0;
-    while(i<validos-1){
+    while(i<validos-1)
+    {
         insertarProductoNombre(producto,i,producto[i+1]);
         i++;
     }
 }
 
-int pasarArreglo (stProducto arreglo[], int dim){
+int pasarArreglo (stProducto arreglo[], int dim)
+{
 
     FILE *listado;
     listado = fopen("listado.bin", "rb");
@@ -436,9 +480,11 @@ int pasarArreglo (stProducto arreglo[], int dim){
     int i = 0;
     stProducto producto;
 
-    if(listado != NULL){
+    if(listado != NULL)
+    {
 
-        while(!feof(listado) && i < dim){
+        while(!feof(listado) && i < dim)
+        {
 
             fread(&producto, sizeof(stProducto), 1, listado);
             arreglo[i] = producto;
@@ -450,13 +496,116 @@ int pasarArreglo (stProducto arreglo[], int dim){
     return i;
 }
 
-void mostrarArreglo(stProducto arreglo[], int validos){
+void mostrarArreglo(stProducto arreglo[], int validos)
+{
 
     int i = 0;
 
-    for(i = 0; i < validos; i++){
+    for(i = 0; i < validos; i++)
+    {
 
         printf("%s", &arreglo[i].nombre);
 
     }
 }
+
+void borrarDato(int id, char archivo[])
+{
+
+    int flag = 0;
+    stProducto producto;
+    FILE *temp;
+    FILE *original;
+    temp = fopen("listado.tmp", "ab");
+    original = fopen(archivo, "rb");
+
+    if(original != NULL  && temp != NULL)
+    {
+        while(!feof(original))
+        {
+            fread(&producto,sizeof(stProducto), 1, original);
+            if(!feof(original) && producto.id != id)
+            {
+                if(flag == 1)
+                {
+                    producto.id = producto.id-1;
+                }
+                fwrite(&producto, sizeof(stProducto), 1, temp);
+            }
+            else
+            {
+                flag = 1;
+            }
+        }
+        fclose(temp);
+        fclose(original);
+        remove(archivo);
+        rename("listado.tmp", archivo);
+    }
+}
+
+void modificarExistencias(int id, int stock, char archivo[])
+{
+    stProducto producto;
+    FILE *archi;
+    archi = fopen(archivo, "r+b");
+
+    if(archi != NULL && id>0)
+    {
+        fseek(archi, sizeof(stProducto)*(id-1), SEEK_SET);
+        fread(&producto, sizeof(stProducto),1, archi);
+        fseek(archi, sizeof(stProducto)*-1, SEEK_CUR);
+        producto.existencias = stock;
+        fwrite(&producto, sizeof(stProducto), 1, archi);
+        fclose(archi);
+        printf("\n-----PRODUCTO ACTUALIZADO-----");
+        productoSeleccionado(id, archivo);
+    }
+    else
+    {
+        printf("\nID INVALIDA\n");
+    }
+}
+
+void modificarPrecio(int id, int precio, char archivo[])
+{
+    stProducto producto;
+    FILE *archi;
+    archi = fopen(archivo, "r+b");
+
+    if(archi != NULL && id>0)
+    {
+        fseek(archi, sizeof(stProducto)*(id-1), SEEK_SET);
+        fread(&producto, sizeof(stProducto),1, archi);
+        fseek(archi, sizeof(stProducto)*-1, SEEK_CUR);
+        producto.precio = precio;
+        fwrite(&producto, sizeof(stProducto), 1, archi);
+        fclose(archi);
+        printf("\n-----PRODUCTO ACTUALIZADO-----");
+        productoSeleccionado(id, archivo);
+    }
+    else
+    {
+        printf("\nID INVALIDA\n");
+    }
+}
+
+void productoSeleccionado (int id, char archivo[])
+{
+    FILE *archi;
+    archi = fopen(archivo, "rb");
+    stProducto producto;
+    if(archi!=NULL)
+    {
+        fseek(archi, sizeof (stProducto)*(id-1), SEEK_SET);
+        fread(&producto, sizeof(stProducto),1, archi);
+        printf("\nNOMBRE: %s\n", producto.nombre);
+        printf("EXISTENCIAS: %i\n", producto.existencias);
+        printf("PRECIO: $%i\n", producto.precio);
+        printf("------------------------------\n");
+        fclose(archi);
+    }
+
+}
+
+
